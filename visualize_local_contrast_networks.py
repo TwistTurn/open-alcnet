@@ -7,7 +7,7 @@ import sys
 import socket
 import argparse
 import numpy as np
-from utils import summary
+#from utils import summary
 from tqdm import tqdm
 
 import mxnet as mx
@@ -128,6 +128,7 @@ def parse_args():
     else:
         args.ctx = [mx.gpu(int(i)) for i in args.gpus.split(',') if i.strip()]
         print('Number of GPUs:', len(args.ctx))
+        print('GPUs:', args.ctx)
 
     # Synchronized BatchNorm
     args.norm_layer = mx.gluon.contrib.nn.SyncBatchNorm if args.syncbn \
@@ -213,7 +214,7 @@ class Trainer(object):
     ################################# evaluation metrics #################################
 
     def validation(self, epoch):
-        save_path = os.path.expanduser('/Users/grok/Downloads/')
+        save_path = 'results/'
 
         # summary(self.net, mx.nd.zeros((1, 3, args.crop_size, args.crop_size), ctx=args.ctx[0]))
         # sys.exit()
@@ -221,12 +222,18 @@ class Trainer(object):
         i = 0
         mx.nd.waitall()
         start = timeit.default_timer()
+        count = 0
         for img, mask, img_id in self.valset:
             exp_img = img.expand_dims(axis=0)
             # pred = self.net(exp_img).squeeze().asnumpy() > 0
+            count += 1
             pred = self.net(exp_img)
-            plt.imsave(save_path + img_id + '.png', pred)
+            #plt.imsave(save_path + img_id + '.png', (pred.squeeze().asnumpy()>0).astype('uint8'))
             # print(pred.shape)
+        end = timeit.default_timer()
+        print(start)
+        print(end)
+        print(count)
 
         # save_path = os.path.expanduser('/Users/grok/Downloads/img')
         # for img, mask, img_id in self.valset:

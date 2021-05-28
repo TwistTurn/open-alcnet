@@ -26,16 +26,16 @@ def parse_args():
     parser = argparse.ArgumentParser(description='MXNet Gluon \
                                      Segmentation')
     # model
-    parser.add_argument('--net-choice', type=str, default='PCMNet',
+    parser.add_argument('--net-choice', type=str, default='MPCMResNetFPN',
                         help='model name PCMNet, PlainNet')
     parser.add_argument('--pyramid-mode', type=str, default='Dec',
                         help='Inc, Dec')
     parser.add_argument('--r', type=int, default=2, help='1, 2, 4')
     parser.add_argument('--summary', action='store_true',
                         help='print parameters')
-    parser.add_argument('--scale-mode', type=str, default='xxx',
+    parser.add_argument('--scale-mode', type=str, default='Multiple',
                         help='Single, Multiple, Selective')
-    parser.add_argument('--pyramid-fuse', type=str, default='sk',
+    parser.add_argument('--pyramid-fuse', type=str, default='bottomuplocal',
                         help='add, max, sk')
     parser.add_argument('--cue', type=str, default='lcm', help='lcm or orig')
     # dataset
@@ -65,10 +65,10 @@ def parse_args():
                         help='number of epochs to train (default: 50)')
     parser.add_argument('--start_epoch', type=int, default=0,
                         metavar='N', help='start epochs (default:0)')
-    parser.add_argument('--batch-size', type=int, default=2,
+    parser.add_argument('--batch-size', type=int, default=1,
                         metavar='N', help='input batch size for \
                         training (default: 16)')
-    parser.add_argument('--test-batch-size', type=int, default=32,
+    parser.add_argument('--test-batch-size', type=int, default=2,
                         metavar='N', help='input batch size for \
                         testing (default: 32)')
     parser.add_argument('--lr', type=float, default=0.1, metavar='LR',
@@ -165,6 +165,8 @@ class Trainer(object):
             if args.colab:
                 # data_root = '/content/gdrive/My Drive/Colab Notebooks/datasets'
                 data_root = '/content/datasets'
+        elif platform.system() == "Windows":
+            data_root = 'D:/my_git/sirst'
         else:
             raise ValueError('Notice Dataset Path')
 
