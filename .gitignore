@@ -8,4 +8,6 @@
 #*.pdf
 *.params
 *.states
-*.png
+result/*
+results/*
+images/*
